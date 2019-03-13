@@ -18,7 +18,7 @@ function userPropTypeValidator(user) {
 function set(key, val) {
 	if (!key) {
 		keys = _.orderBy(Object.keys(data), "asc");
-		key = keys[keys.length - 1] + 1;
+		key = Number(keys[keys.length - 1]) + 1;
 	}
 
 	if (data[key]) throw new Error("User already exists!");
