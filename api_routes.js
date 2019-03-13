@@ -1,57 +1,91 @@
-const express = require('express');
+const express = require("express");
 
-const dataStorage = require('./dataStorage')
+const dataStorage = require("./dataStorage");
 var router = express.Router();
 
-router.get('/users', function (req, res, next) {
-    res.json(dataStorage.getAll());
-})
+router.get("/users", function(req, res, next) {
+	res.json(dataStorage.getAll());
+});
 
-router.get('/users/:id', function (req, res, next) {
-    const userId = req.params.id;
-    const user = dataStorage.get(userId);
+router.get("/users/:id", function(req, res, next) {
+	const userId = req.params.id;
+	const user = dataStorage.get(userId);
 
-    if (!user) throw new Error('User does not exist!')
-    res.json(user)
-})
+	if (!user) {
+		res.status(404).end();
+	} else {
+		res.json(user);
+	}
+});
 
-router.post('/users', function (req, res, next) {
-    console.log('received resp')
-    const body = req.body;
-    dataStorage.set(null, req.body)
+router.post("/users", function(req, res, next) {
+	req.body.balance = Number(req.body.balance);
 
-    res.status(201).end();
-})
+	try {
+		dataStorage.userPropExistValidator(req.body);
+		dataStorage.userPropTypeValidator(req.body);
+	} catch (e) {
+		return res.status(400).json({
+			message: "Invalid arguments"
+		});
+	}
 
-router.put('/users/:id', function (req, res, next) {
-    const userId = req.params.id;
-    const user = dataStorage.get(userId)
+	dataStorage.set(null, req.body);
+	res.status(201).end();
+});
 
-    if (user) {
-        dataStorage.update(userId, req.body)
-    } else {
-        dataStorage.set(userId, req.body)
-        res.status(201);
-    }
+router.put("/users/:id", function(req, res, next) {
+	const userId = req.params.id;
+	const user = dataStorage.get(userId);
+	req.body.balance = Number(req.body.balance);
 
-    res.end();
-})
+	try {
+		dataStorage.userPropExistValidator(req.body);
+		dataStorage.userPropTypeValidator(req.body);
+	} catch (e) {
+		return res.status(400).json({
+			message: "Invalid arguments"
+		});
+	}
 
-router.patch('/users/:id', function (req, res, next) {
-    const userId = req.params.id;
-    dataStorage.update(userId, req.body)
+	if (user) {
+		dataStorage.update(userId, req.body);
+	} else {
+		dataStorage.set(userId, req.body);
+		res.status(201);
+	}
 
-    res.end();
-})
+	res.end();
+});
 
-router.delete('/users/:id', function (req, res, next) {
-    console.log('wow')
-    const userId = req.params.id;
-    const user = dataStorage.get(userId)
+router.patch("/users/:id", function(req, res, next) {
+	const userId = req.params.id;
+	const user = dataStorage.get(userId);
+	req.body.balance = Number(req.body.balance);
 
-    dataStorage.del(userId)
+	if (!user) return res.status(404).end();
+	try {
+		dataStorage.userPropExistValidator(req.body);
+		dataStorage.userPropTypeValidator(req.body);
+	} catch (e) {
+		return res.status(400).json({
+			message: "Invalid arguments"
+		});
+	}
 
-    res.end()
-})
+	dataStorage.update(userId, req.body);
+	res.end();
+});
+
+router.delete("/users/:id", function(req, res, next) {
+	const userId = req.params.id;
+	const user = dataStorage.get(userId);
+
+	if (!user) return res.status(404).end();
+
+	dataStorage.del(userId);
+
+	res.end();
+});
 
 module.exports = router;
