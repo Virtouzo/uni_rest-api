@@ -22,4 +22,4 @@ DELETE: {
 
 
 ## commands to start the rest-api: 
-docker-compose up
+docker-compose up -d
