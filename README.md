@@ -2,4 +2,4 @@
 
 ## commands to start the rest-api: 
 docker build -t rest-api .  
-docker run -p 3000:3000 rest-api
+docker run -p 80:3000 rest-api -d
