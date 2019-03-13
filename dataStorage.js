@@ -7,12 +7,12 @@ const data = {
 };
 
 function userPropExistValidator(user) {
-	if (!user.first_name) throw new Error("Invalid arguments!");
-	if (!user.balance) throw new Error("Invalid arguments!");
+	if (!user.first_name) throw new Error("first_name argument is missing!");
+	if (!user.balance) throw new Error("balance argument is missing!");
 }
 function userPropTypeValidator(user) {
-	if (user.first_name && !_.isString(user.first_name)) throw new Error("Invalid arguments!");
-	if (user.balance && !_.isNumber(user.balance)) throw new Error("Invalid arguments!");
+	if (user.first_name && !_.isString(user.first_name)) throw new Error("Argument first_name is missing or not string!");
+	if (user.balance && !_.isNumber(user.balance)) throw new Error("Balance is missing or not an integer!");
 }
 
 function set(key, val) {
@@ -23,6 +23,7 @@ function set(key, val) {
 
 	if (data[key]) throw new Error("User already exists!");
 	data[key] = val;
+	return key;
 }
 function get(key) {
 	return data[key];
@@ -35,6 +36,7 @@ function update(key, newInfo) {
 
 	const newUser = { ...data[key], ...newInfo };
 	data[key] = newUser;
+	return newUser;
 }
 function del(key) {
 	if (!data[key]) throw new Error("User does not exist!");

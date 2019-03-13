@@ -39,8 +39,11 @@ router.get("/users/:id", userExistChecker, function(req, res, next) {
 });
 
 router.post("/users", dataValidator, function(req, res, next) {
-	dataStorage.set(null, req.body);
-	res.status(201).end();
+	let key = dataStorage.set(null, req.body);
+
+	let json = {};
+	json[key] = { balance: req.body.balance, first_name: req.body.first_name };
+	res.status(201).json(json);
 });
 
 router.put("/users/:id", dataValidator, function(req, res, next) {
@@ -48,7 +51,10 @@ router.put("/users/:id", dataValidator, function(req, res, next) {
 	const user = dataStorage.get(userId);
 
 	if (user) {
-		dataStorage.update(userId, req.body);
+		let updated = dataStorage.update(userId, req.body);
+		let json = {};
+		json[userId] = updated;
+		res.json(json);
 	} else {
 		dataStorage.set(userId, req.body);
 		res.status(201);
@@ -61,8 +67,11 @@ router.patch("/users/:id", userExistChecker, dataValidator, function(req, res, n
 	const userId = req.params.id;
 	const user = dataStorage.get(userId);
 
-	dataStorage.update(userId, req.body);
-	res.end();
+	let updated = dataStorage.update(userId, req.body);
+
+	let json = {};
+	json[userId] = updated;
+	res.json(json);
 });
 
 router.delete("/users/:id", userExistChecker, function(req, res, next) {
@@ -70,7 +79,7 @@ router.delete("/users/:id", userExistChecker, function(req, res, next) {
 
 	dataStorage.del(userId);
 
-	res.end();
+	res.json({deleted:true, id: userId});
 });
 
 module.exports = router;
