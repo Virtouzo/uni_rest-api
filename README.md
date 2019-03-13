@@ -4,20 +4,20 @@
 Visos uzklausos vykdomos is: localhost/api/users
 
 GET: {  
-  localhost/api/users,  
-  localhost/api/users/:id  
+    localhost/api/users,  
+    localhost/api/users/:id  
 },  
 POST: {  
-  localhost/api/users  
+    localhost/api/users  
 }  
 PATCH: {  
-  localhost/api/users/:id  
+    localhost/api/users/:id  
 },  
 PUT: {  
-  localhost/api/users/:id  
+    localhost/api/users/:id  
 }  
 DELETE: {  
-  localhost/api/users/:id  
+    localhost/api/users/:id  
 }  
 
 
